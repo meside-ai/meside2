@@ -1,5 +1,6 @@
 import { ToolInvocationUIPart, UIMessage } from "@ai-sdk/ui-utils";
 import {
+  ActionIcon,
   Avatar,
   Box,
   Button,
@@ -10,12 +11,16 @@ import {
 } from "@mantine/core";
 import { AssistantHeader } from "./assistant-header";
 import { MarkdownPart } from "./markdown-part";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useThreadContext } from "../chat/context";
-import { ThreadInput } from "./thread-input";
-import { IconPencil, IconTool, IconX } from "@tabler/icons-react";
-import { getThreadCreate } from "../../queries/thread";
-import { useMutation } from "@tanstack/react-query";
+import {
+  IconChevronLeft,
+  IconChevronRight,
+  IconPencil,
+  IconTool,
+} from "@tabler/icons-react";
+import { getThreadDetail } from "../../queries/thread";
+import { useQuery } from "@tanstack/react-query";
 import { EditThreadInput } from "./edit-thread-input";
 
 export const ThreadRender = ({
@@ -77,20 +82,26 @@ const UserMessageRender = ({ message }: { message: UIMessage }) => {
                   );
               }
             })}
-            <Box>
-              <Button
-                variant="transparent"
-                onClick={() => {
-                  setIsEditing(!isEditing);
-                }}
-                leftSection={<IconPencil size={14} />}
-                mt={10}
-              >
-                Edit
-              </Button>
-            </Box>
           </Box>
         </Box>
+      )}
+      {!isEditing && (
+        <Group justify="flex-end" align="center" gap="xs" mt="md">
+          <Box display="flex" style={{ justifyContent: "space-between" }}>
+            <ThreadSiblings />
+          </Box>
+          <Box>
+            <Button
+              variant="transparent"
+              onClick={() => {
+                setIsEditing(!isEditing);
+              }}
+              leftSection={<IconPencil size={14} />}
+            >
+              Edit
+            </Button>
+          </Box>
+        </Group>
       )}
     </Box>
   );
@@ -124,7 +135,67 @@ const ToolInvocationRender = ({ part }: { part: ToolInvocationUIPart }) => {
         <IconTool size={14} />
         <Text>{part.toolInvocation.toolName}</Text>
       </Group>
-      <Text size="xs">{JSON.stringify(part.toolInvocation.args, null, 2)}</Text>
+      {/* <Text size="xs">{JSON.stringify(part.toolInvocation.args, null, 2)}</Text> */}
     </Box>
+  );
+};
+
+const ThreadSiblings = () => {
+  const { threadId, setThreadId } = useThreadContext();
+
+  const { data } = useQuery(getThreadDetail({ threadId: threadId ?? "" }));
+
+  const siblingIds = useMemo(() => {
+    return data?.thread?.siblingIds ?? [];
+  }, [data?.thread?.siblingIds]);
+
+  const totalCount = useMemo(() => {
+    return siblingIds.length;
+  }, [siblingIds.length]);
+
+  const currentIndex = useMemo(() => {
+    return siblingIds.indexOf(threadId ?? "");
+  }, [siblingIds, threadId]);
+
+  if (totalCount === 1) {
+    return null;
+  }
+
+  return (
+    <Group gap={0} align="center">
+      <ActionIcon
+        variant="transparent"
+        onClick={() => {
+          const index = siblingIds[currentIndex - 1];
+          if (!index) {
+            return;
+          }
+          setThreadId(index);
+        }}
+        style={{
+          visibility: currentIndex > 0 ? "visible" : "hidden",
+        }}
+      >
+        <IconChevronLeft size={14} />
+      </ActionIcon>
+      <Text>
+        {currentIndex + 1}/{totalCount}
+      </Text>
+      <ActionIcon
+        variant="transparent"
+        onClick={() => {
+          const index = siblingIds[currentIndex + 1];
+          if (!index) {
+            return;
+          }
+          setThreadId(index);
+        }}
+        style={{
+          visibility: currentIndex < totalCount - 1 ? "visible" : "hidden",
+        }}
+      >
+        <IconChevronRight size={14} />
+      </ActionIcon>
+    </Group>
   );
 };
