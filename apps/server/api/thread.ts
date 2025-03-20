@@ -139,6 +139,7 @@ threadApi.openapi(threadUpdateRoute, async (c) => {
       userPrompt: body.userPrompt ?? undefined,
       messages: body.messages ?? undefined,
       parentThreadId: body.parentThreadId ?? undefined,
+      status: body.status ?? undefined,
     })
     .where(eq(threadTable.threadId, body.threadId));
 

@@ -1,5 +1,5 @@
 import type { QueryClientError } from "../utils/query-client";
-import { createPost } from "../utils/request";
+import { createPost } from "@meside/shared/request/index";
 import {
   type ThreadCreateRequest,
   type ThreadCreateResponse,
@@ -7,9 +7,12 @@ import {
   type ThreadDetailResponse,
   type ThreadListRequest,
   type ThreadListResponse,
+  ThreadUpdateRequest,
+  ThreadUpdateResponse,
   threadCreateRoute,
   threadDetailRoute,
   threadListRoute,
+  threadUpdateRoute,
 } from "@meside/shared/api/thread.schema";
 import type {
   UseMutationOptions,
@@ -51,6 +54,20 @@ export const getThreadCreate = (): UseMutationOptions<
   mutationFn: async (body) => {
     const json = await createPost<ThreadCreateRequest, ThreadCreateResponse>(
       `${threadCreateRoute.path}`
+    )(body);
+    return json;
+  },
+});
+
+export const getThreadUpdate = (): UseMutationOptions<
+  ThreadUpdateResponse,
+  QueryClientError,
+  ThreadUpdateRequest
+> => ({
+  mutationKey: [getThreadCreate.name],
+  mutationFn: async (body) => {
+    const json = await createPost<ThreadUpdateRequest, ThreadUpdateResponse>(
+      `${threadUpdateRoute.path}`
     )(body);
     return json;
   },

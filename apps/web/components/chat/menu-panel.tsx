@@ -15,6 +15,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useThreadContext } from "./context";
 
 export const MenuPanel = () => {
+  const { threadId } = useThreadContext();
+
   return (
     <Box
       h="100%"
@@ -28,6 +30,7 @@ export const MenuPanel = () => {
       <Box style={{ overflow: "hidden" }} mb="lg">
         <StartPanel />
       </Box>
+      <Box>{threadId}</Box>
       <Box flex={1} style={{ overflow: "hidden" }}>
         <ThreadPanel />
       </Box>

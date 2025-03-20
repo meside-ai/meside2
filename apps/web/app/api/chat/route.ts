@@ -5,7 +5,15 @@ import { streamText } from "ai";
 let warehouseMcp: Awaited<ReturnType<typeof createMCPClient>> | null = null;
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  const { messages, threadId } = await req.json();
+
+  if (!messages || messages.length === 0) {
+    return new Response("messages is required", { status: 400 });
+  }
+
+  if (!threadId) {
+    return new Response("threadId is required", { status: 400 });
+  }
 
   warehouseMcp = await createMCPClient({
     transport: {
@@ -41,3 +49,14 @@ export async function POST(req: Request) {
 
   return result.toDataStreamResponse();
 }
+
+// const createHandleFinish =
+//   (threadId: string): StreamTextOnFinishCallback<any> =>
+//   async (result) => {
+//     await createPost<ThreadUpdateRequest, ThreadUpdateResponse>(
+//       `${threadUpdateRoute.path}`
+//     )({
+//       threadId: threadId,
+//       messages: result.response.messages,
+//     });
+//   };

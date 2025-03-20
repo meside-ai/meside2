@@ -139,6 +139,7 @@ export const threadCreateRoute = createRoute({
 // threadUpdate
 export const threadUpdateRequestSchema = z.object({
   threadId: z.string(),
+  status: threadDtoSchema.shape.status.optional(),
   activeVersion: z.boolean().optional(),
   shortName: z.string().optional(),
   systemPrompt: z.string().optional(),

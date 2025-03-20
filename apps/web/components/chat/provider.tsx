@@ -1,46 +1,11 @@
 "use client";
 
-import { useCallback } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { ThreadContext } from "./context";
 
 export const ThreadProvider = ({ children }: { children: React.ReactNode }) => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const threadId = searchParams.get("threadId");
-
-  const setThreadId = useCallback(
-    (newThreadId: string | null) => {
-      const params = new URLSearchParams(searchParams.toString());
-
-      if (newThreadId) {
-        params.set("threadId", newThreadId);
-      } else {
-        params.delete("threadId");
-      }
-
-      router.push(`?${params.toString()}`);
-    },
-    [router, searchParams]
-  );
-
-  const quotedThreadId = searchParams.get("quotedThreadId");
-
-  const setQuotedThreadId = useCallback(
-    (newQuotedThreadId: string | null) => {
-      const params = new URLSearchParams(searchParams.toString());
-
-      if (newQuotedThreadId) {
-        params.set("quotedThreadId", newQuotedThreadId);
-      } else {
-        params.delete("quotedThreadId");
-      }
-
-      router.push(`?${params.toString()}`);
-    },
-    [router, searchParams]
-  );
+  const [threadId, setThreadId] = useState<string | null>(null);
+  const [quotedThreadId, setQuotedThreadId] = useState<string | null>(null);
 
   return (
     <ThreadContext.Provider

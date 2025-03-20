@@ -4,6 +4,7 @@ export const getOptions = () => {
       url: Parameters<typeof fetch>[0],
       options: Parameters<typeof fetch>[1]
     ) => {
+      console.log("url", url);
       const response = await fetch(url, options);
       if (response.status >= 200 && response.status < 400) {
         return response;
@@ -32,7 +33,7 @@ export const createPost = <PostRequest, PostResponse>(
     baseUrl: string;
   }
 ) => {
-  const baseUrl = options?.baseUrl ?? "http://localhost:3003/meside/server";
+  const baseUrl = options?.baseUrl ?? "/meside/server";
   const defaultOptions = getOptions();
   const fetch = defaultOptions.fetch;
 
