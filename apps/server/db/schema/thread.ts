@@ -8,7 +8,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { createSelectSchema } from "drizzle-zod";
-import type { z } from "zod";
+import { z } from "zod";
 import { foreignCuid, primaryKeyCuid, useTimestamp } from "../utils";
 
 export const threadStatusEnum = pgEnum("status", ["idle", "active", "closed"]);
@@ -28,6 +28,8 @@ export const threadTable = pgTable("thread", {
   ...useTimestamp(),
 });
 
-export const threadEntitySchema = createSelectSchema(threadTable);
+export const threadEntitySchema = createSelectSchema(threadTable, {
+  messages: z.any(),
+});
 
 export type ThreadEntity = z.infer<typeof threadEntitySchema>;

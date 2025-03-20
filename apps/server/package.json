@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "echo 'Add dev script here'",
+    "dev": "bun run --watch server.ts",
     "build": "echo 'Add build script here'",
     "test": "echo 'Add test script here'",
     "lint": "echo 'Add lint script here'",
@@ -15,7 +15,8 @@
     "studio": "drizzle-kit studio --port=5183"
   },
   "dependencies": {
-    "shared": "*"
+    "@hono/zod-openapi": "^0.19.2",
+    "@meside/shared": "*"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
