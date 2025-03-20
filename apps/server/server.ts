@@ -5,8 +5,8 @@ import { createErrorHandler } from "./utils/error-handler";
 
 const app = new Hono();
 
-app.route("/api", healthApi);
-app.route("/api", threadApi);
+app.route("/meside/server", healthApi);
+app.route("/meside/server", threadApi);
 
 app.onError(createErrorHandler());
 
