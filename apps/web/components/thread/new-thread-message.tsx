@@ -2,7 +2,7 @@ import { useChat } from "@ai-sdk/react";
 import { Box } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getThreadDetail, getThreadUpdate } from "../../queries/thread";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ThreadRender } from "./thread-render";
 
 export const NewThreadMessage = ({
@@ -16,6 +16,9 @@ export const NewThreadMessage = ({
   const [finished, setFinished] = useState(false);
   const [errored, setErrored] = useState(false);
   const mountedRef = useRef(false);
+  const isLoading = useMemo(() => {
+    return !finished || !errored;
+  }, [finished, errored]);
 
   const { messages, input, setInput, handleSubmit } = useChat({
     api: "/api/chat",
@@ -79,7 +82,7 @@ export const NewThreadMessage = ({
 
   return (
     <Box style={{ height: "100%", overflow: "auto" }}>
-      <ThreadRender messages={messages} />
+      <ThreadRender messages={messages} loading={isLoading} />
     </Box>
   );
 };

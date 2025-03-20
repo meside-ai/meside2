@@ -10,7 +10,7 @@ export const NewThreadInput = ({
 }) => {
   const { mutateAsync: createNewThread } = useMutation(getThreadCreate());
   return (
-    <Paper withBorder p="md">
+    <Paper withBorder p="md" radius="lg">
       <ThreadInput
         handleSubmit={async (userInput) => {
           const json = await createNewThread({
