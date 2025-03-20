@@ -1,45 +1,23 @@
 import { openai } from "@ai-sdk/openai";
-import {
-  experimental_createMCPClient as createMCPClient,
-  tool,
-  Tool,
-} from "ai";
-import { z } from "zod";
+import { experimental_createMCPClient as createMCPClient, Tool } from "ai";
 import { streamText } from "ai";
 
-export const maxDuration = 30;
-
-let warehouseMcp: any;
+let warehouseMcp: Awaited<ReturnType<typeof createMCPClient>> | null = null;
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
-  try {
-    warehouseMcp = await createMCPClient({
-      transport: {
-        type: "sse",
-        url: "http://localhost:6333/meside/api/mcp-server/sse",
-      },
-    });
-  } catch (error) {
-    console.error(error);
-    throw new Error("Failed to create MCP client");
-  }
+  warehouseMcp = await createMCPClient({
+    transport: {
+      type: "sse",
+      url: "http://localhost:3002/api/mcp/warehouse",
+    },
+  });
 
   const warehouseTools = await warehouseMcp.tools();
 
   const tools: Record<string, Tool> = {
     ...warehouseTools,
-    // weather: tool({
-    //   description: "Get the weather in a location",
-    //   parameters: z.object({
-    //     location: z.string().describe("The location to get the weather for"),
-    //   }),
-    //   execute: async ({ location }) => ({
-    //     location,
-    //     temperature: 72 + Math.floor(Math.random() * 21) - 10,
-    //   }),
-    // }),
   };
 
   const result = streamText({

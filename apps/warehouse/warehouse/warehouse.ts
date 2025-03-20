@@ -14,8 +14,8 @@ export class WarehouseFactory {
         return new BigqueryWarehouse();
       case "mysql":
         return new MysqlWarehouse();
-      case "oracle":
-        return new OracleWarehouse();
+      // case "oracle":
+      //   return new OracleWarehouse();
       default:
         throw new Error(`Unsupported warehouse type: ${type}`);
     }

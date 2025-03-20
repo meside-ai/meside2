@@ -1,6 +1,10 @@
 import { z } from "zod";
 
 export const environmentSchema = z.object({
+  NODE_ENV: z
+    .enum(["production", "development", "test"])
+    .optional()
+    .default("development"),
   DATABASE_URL: z.string(),
   // SEEDING
   SEED_WAREHOUSE_HOST: z.string().optional(),

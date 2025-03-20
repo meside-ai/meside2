@@ -1,45 +1,19 @@
-import { environment } from "@/configs/environment";
-import { type Logger, pino } from "pino";
+export type Logger = {
+  error: (...args: any[]) => void;
+  warn: (...args: any[]) => void;
+  info: (...args: any[]) => void;
+};
 
 export const getLogger = (name: string): Logger => {
-  const loggerType = "server";
-
-  if (environment.NODE_ENV === "production") {
-    return pino({
-      name: `${loggerType}:${name}`,
-      transport: {
-        target: "pino-pretty",
-        options: {
-          colorize: true,
-          colorizeObjects: true,
-          errorLikeObjectKeys: [
-            "err",
-            "error",
-            "error_stack",
-            "stack",
-            "apiErrorHandlerCallStack",
-          ],
-        },
-      },
-    });
-  }
-
-  return pino({
-    name: `${loggerType}:${name}`,
-    transport: {
-      target: "pino-pretty",
-      options: {
-        colorize: true,
-        colorizeObjects: true,
-        errorLikeObjectKeys: [
-          "err",
-          "error",
-          "error_stack",
-          "stack",
-          "apiErrorHandlerCallStack",
-        ],
-        ignore: "pid,hostname",
-      },
+  return {
+    error: (...args: any[]) => {
+      console.error(name, args);
     },
-  });
+    warn: (...args: any[]) => {
+      console.warn(name, args);
+    },
+    info: (...args: any[]) => {
+      console.info(name, args);
+    },
+  };
 };
